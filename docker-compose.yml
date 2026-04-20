@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: prumo-billing-trial-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: prumo_billing_trial_development
+    ports:
+      - "5440:5432"
+    volumes:
+      - prumo_billing_trial_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d prumo_billing_trial_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: prumo-billing-trial-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - prumo_billing_trial_redis_data:/data
+
+volumes:
+  prumo_billing_trial_pg_data:
+  prumo_billing_trial_redis_data:

@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Frontend build output
+frontend/dist/
+
+# Runtime logs
+*.log
+backend/log/*
+frontend/logs/*
+
+# Runtime process files
+*.pid
+backend/tmp/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+backend/config/master.key
+
+# Internal planning notes
+plan.md
+STATUS.md
+SECURITY_PLAN.md
+GITHUB_DESCRIPTION.md
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
