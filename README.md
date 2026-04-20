@@ -79,14 +79,6 @@ The seed creates:
 - open, paid, overdue and canceled invoices;
 - a scheduled cancellation event for customer history validation.
 
-## GitHub Description
-
-Suggested repository description:
-
-```text
-Full-stack billing SaaS demo with React, Rails API, PostgreSQL, Docker, auth, RBAC, invoices, customers, documents, audit history and bilingual PT/EN UI.
-```
-
 ## Notes
 
 This environment uses fictional data only. Do not use real documents, real tax IDs, customer personal data, secrets or production credentials here.
