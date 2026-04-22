@@ -79,6 +79,10 @@ The seed creates:
 - open, paid, overdue and canceled invoices;
 - a scheduled cancellation event for customer history validation.
 
+## Security Notes
+
+This trial includes token-based sessions, role-based authorization, secured PDF upload validation, safer production defaults and sanitized seed behavior. It is intended for portfolio demonstration and should not be used with real personal, financial or tax data.
+
 ## Notes
 
 This environment uses fictional data only. Do not use real documents, real tax IDs, customer personal data, secrets or production credentials here.

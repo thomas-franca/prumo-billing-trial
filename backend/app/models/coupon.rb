@@ -30,10 +30,10 @@ class Coupon < ApplicationRecord
   def required_discount_value
     if discount_type == "percentage"
       errors.add(:percentage, "deve ser informado para cupom percentual") if percentage.blank?
-      errors.add(:value_cents, "nao deve ser informado para cupom percentual") if value_cents.present? && value_cents.positive?
+      errors.add(:value_cents, "não deve ser informado para cupom percentual") if value_cents.present? && value_cents.positive?
     elsif discount_type == "fixed_amount"
       errors.add(:value_cents, "deve ser informado para cupom de valor fixo") if value_cents.blank?
-      errors.add(:percentage, "nao deve ser informado para cupom de valor fixo") if percentage.present? && percentage.positive?
+      errors.add(:percentage, "não deve ser informado para cupom de valor fixo") if percentage.present? && percentage.positive?
     end
   end
 end

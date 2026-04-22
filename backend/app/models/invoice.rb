@@ -151,7 +151,7 @@ class Invoice < ApplicationRecord
   def period_end_cannot_precede_period_start
     return if period_start.blank? || period_end.blank? || period_end >= period_start
 
-    errors.add(:period_end, "nao pode ser anterior ao inicio do periodo")
+    errors.add(:period_end, "não pode ser anterior ao início do período")
   end
 
   def record_invoice_generated
@@ -159,6 +159,6 @@ class Invoice < ApplicationRecord
   end
 
   def record_invoice_deleted
-    record_billing_event!("invoice_deleted", "Fatura excluida")
+    record_billing_event!("invoice_deleted", "Fatura excluída")
   end
 end

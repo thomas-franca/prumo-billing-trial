@@ -28,7 +28,7 @@ module Api
 
         file_data = file.read
         unless valid_pdf_content?(file_data)
-          render json: { error: "O conteudo enviado nao parece ser um PDF valido." }, status: :unprocessable_entity
+          render json: { error: "O conteúdo enviado não parece ser um PDF válido." }, status: :unprocessable_entity
           return
         end
 

@@ -20,7 +20,7 @@ module Api
 
         unless current_user_session&.active?
           audit_security_event!("auth.required", metadata: { reason: "missing_or_expired_token" })
-          render json: { error: "Autenticacao obrigatoria." }, status: :unauthorized
+          render json: { error: "Autenticação obrigatória." }, status: :unauthorized
           return
         end
 
@@ -65,7 +65,7 @@ module Api
 
       def render_not_found(error)
         Rails.logger.info("record_not_found controller=#{controller_name} action=#{action_name} error=#{error.class}")
-        render json: { error: "Recurso nao encontrado." }, status: :not_found
+        render json: { error: "Recurso não encontrado." }, status: :not_found
       end
 
       def render_unprocessable_entity(error)

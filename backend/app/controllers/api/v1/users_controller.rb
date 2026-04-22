@@ -16,7 +16,7 @@ module Api
 
       def update
         if last_administrator? && user_params[:role].present? && user_params[:role] != "administrator"
-          render json: { errors: [ "Nao e possivel alterar o papel do ultimo administrador." ] },
+          render json: { errors: [ "Não é possível alterar o papel do último administrador." ] },
             status: :unprocessable_entity
           return
         end
@@ -27,7 +27,7 @@ module Api
 
       def destroy
         if last_administrator?
-          render json: { errors: [ "Nao e possivel excluir o ultimo administrador." ] },
+          render json: { errors: [ "Não é possível excluir o último administrador." ] },
             status: :unprocessable_entity
           return
         end

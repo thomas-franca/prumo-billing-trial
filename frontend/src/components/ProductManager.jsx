@@ -177,7 +177,7 @@ export default function ProductManager({ canEdit = true }) {
           </label>
 
           <label>
-            Descricao
+            Descrição
             <textarea
               value={form.description}
               disabled={!canEdit}

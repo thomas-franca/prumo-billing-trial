@@ -14,6 +14,6 @@ class CustomerDocument < ApplicationRecord
       original_filename.to_s.downcase.end_with?(".pdf") &&
       file_data.to_s.start_with?("%PDF-")
 
-    errors.add(:base, "Envie apenas arquivos PDF validos")
+    errors.add(:base, "Envie apenas arquivos PDF válidos")
   end
 end

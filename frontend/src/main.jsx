@@ -25,7 +25,7 @@ try {
   label.textContent = "Prumo Billing Trial";
 
   const heading = document.createElement("h1");
-  heading.textContent = "Nao foi possivel carregar a interface.";
+  heading.textContent = "Não foi possível carregar a interface.";
 
   const panel = document.createElement("section");
   panel.className = "panel";

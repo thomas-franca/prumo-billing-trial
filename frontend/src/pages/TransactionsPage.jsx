@@ -118,7 +118,7 @@ export default function TransactionsPage() {
         </div>
       </header>
 
-      <section className="summary-grid" aria-label="Resumo de transacoes">
+      <section className="summary-grid" aria-label="Resumo de transações">
         <article className="metric-card">
           <span>Receita</span>
           <strong>{currency.format(summary.revenue / 100)}</strong>

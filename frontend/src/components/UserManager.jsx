@@ -206,7 +206,7 @@ export default function UserManager({ canManage = false }) {
             <input
               value={form.username}
               onChange={(event) => updateForm("username", event.target.value)}
-              placeholder="usuario-demo"
+              placeholder="usuário-demo"
             />
           </label>
 
