@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { usersApi } from "../api/client.js";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 const roleLabels = {
   administrator: "Administrador",
@@ -51,6 +52,7 @@ export default function UserManager({ canManage = false }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   const adminCount = useMemo(
     () => users.filter((user) => user.role === "administrator").length,
@@ -154,21 +156,27 @@ export default function UserManager({ canManage = false }) {
     setError("");
     setNotice("");
 
-    if (!window.confirm(`Excluir ${user.full_name}?`)) {
-      return;
-    }
+    setConfirmDialog({
+      title: `Excluir ${user.full_name}?`,
+      message: "Este acesso será removido do sistema. Essa ação não pode ser desfeita pela interface.",
+      confirmLabel: "Excluir usuário",
+      onConfirm: async () => {
+        setConfirmDialog(null);
 
-    try {
-      await usersApi.remove(user.id);
-      setNotice("Usuário excluído.");
-      if (editingUser?.id === user.id) {
-        resetForm();
-      }
-      await loadUsers();
-    } catch (apiError) {
-      setError(apiError.message);
-    }
+        try {
+          await usersApi.remove(user.id);
+          setNotice("Usuário excluído.");
+          if (editingUser?.id === user.id) {
+            resetForm();
+          }
+          await loadUsers();
+        } catch (apiError) {
+          setError(apiError.message);
+        }
+      },
+    });
   }
+
 
   if (!canManage) {
     return null;
@@ -295,6 +303,12 @@ export default function UserManager({ canManage = false }) {
           </div>
         )}
       </article>
+      {confirmDialog && (
+        <ConfirmDialog
+          {...confirmDialog}
+          onCancel={() => setConfirmDialog(null)}
+        />
+      )}
     </section>
   );
 }

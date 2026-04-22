@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { couponsApi } from "../api/client.js";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 const emptyForm = {
   code: "",
@@ -61,6 +62,7 @@ export default function CouponManager({ canEdit = true }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   const activeCoupons = useMemo(
     () => coupons.filter((coupon) => coupon.active).length,
@@ -149,19 +151,27 @@ export default function CouponManager({ canEdit = true }) {
 
   async function deleteCoupon(coupon) {
     if (!canEdit) return;
-    if (!window.confirm(`Excluir o cupom ${coupon.code}?`)) return;
 
     setError("");
     setNotice("");
 
-    try {
-      await couponsApi.remove(coupon.id);
-      setNotice("Cupom excluído.");
-      if (editingCoupon?.id === coupon.id) resetForm();
-      await loadCoupons();
-    } catch (apiError) {
-      setError(apiError.message);
-    }
+    setConfirmDialog({
+      title: `Excluir o cupom ${coupon.code}?`,
+      message: "Faturas futuras não poderão usar este desconto depois da exclusão.",
+      confirmLabel: "Excluir cupom",
+      onConfirm: async () => {
+        setConfirmDialog(null);
+
+        try {
+          await couponsApi.remove(coupon.id);
+          setNotice("Cupom excluído.");
+          if (editingCoupon?.id === coupon.id) resetForm();
+          await loadCoupons();
+        } catch (apiError) {
+          setError(apiError.message);
+        }
+      },
+    });
   }
 
   return (
@@ -313,6 +323,12 @@ export default function CouponManager({ canEdit = true }) {
           </div>
         )}
       </article>
+      {confirmDialog && (
+        <ConfirmDialog
+          {...confirmDialog}
+          onCancel={() => setConfirmDialog(null)}
+        />
+      )}
     </section>
   );
 }

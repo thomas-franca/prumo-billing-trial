@@ -107,7 +107,15 @@ function CashDashboard({ currentUser }) {
       </section>
 
       {error && <p className="form-message error-message">{error}</p>}
-      {loading && <div className="empty-state">Carregando dados do dashboard...</div>}
+      {loading && (
+        <section className="dashboard-loading" aria-label={t("Carregando dados do dashboard...")}>
+          <div>
+            <span className="loading-pulse" />
+            <strong>{t("Carregando dados do dashboard...")}</strong>
+          </div>
+          <p>{t("Atualizando caixa, indicadores e análise rápida.")}</p>
+        </section>
+      )}
 
       <section className="workspace">
         <article className="cashflow-panel" aria-labelledby="cashflow-title">
@@ -214,10 +222,18 @@ function UsersPage({ canManage }) {
 }
 
 export default function Dashboard({ currentUser, permissions, onLogout }) {
+  const { t } = useLanguage();
   const [activePage, setActivePage] = useState("dashboard");
   const [openMenu, setOpenMenu] = useState("catalog");
+  const [showToast, setShowToast] = useState(true);
   const canManageUsers = Boolean(permissions?.can_manage_users);
   const canEditFinancialData = Boolean(permissions?.can_edit_financial_data);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowToast(false), 5200);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const pages = {
     dashboard: <CashDashboard currentUser={currentUser} />,
@@ -321,6 +337,18 @@ export default function Dashboard({ currentUser, permissions, onLogout }) {
         <div className="trial-banner">
           Versão demonstrativa. Use dados fictícios e valide fluxos antes de adaptar para produção.
         </div>
+        {showToast && (
+          <aside className="toast-panel" role="status" aria-live="polite">
+            <div>
+              <span className="toast-dot" />
+              <strong>{t("Painel pronto")}</strong>
+            </div>
+            <p>{t(`Você está conectado como ${currentUser.username}.`)}</p>
+            <button type="button" aria-label={t("Fechar aviso")} onClick={() => setShowToast(false)}>
+              {t("Fechar")}
+            </button>
+          </aside>
+        )}
         {activePageContent}
       </main>
     </div>

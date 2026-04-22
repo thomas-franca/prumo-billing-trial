@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { productsApi } from "../api/client.js";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 const emptyForm = {
   name: "",
@@ -42,6 +43,7 @@ export default function ProductManager({ canEdit = true }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   const activeProducts = useMemo(
     () => products.filter((product) => product.active).length,
@@ -143,20 +145,25 @@ export default function ProductManager({ canEdit = true }) {
     setError("");
     setNotice("");
 
-    if (!window.confirm(`Excluir ${product.name}?`)) {
-      return;
-    }
+    setConfirmDialog({
+      title: `Excluir ${product.name}?`,
+      message: "Esse produto ou serviço será removido do catálogo. Clientes já vinculados podem exigir revisão manual.",
+      confirmLabel: "Excluir produto",
+      onConfirm: async () => {
+        setConfirmDialog(null);
 
-    try {
-      await productsApi.remove(product.id);
-      setNotice("Produto excluído.");
-      if (editingProduct?.id === product.id) {
-        resetForm();
-      }
-      await loadProducts();
-    } catch (apiError) {
-      setError(apiError.message);
-    }
+        try {
+          await productsApi.remove(product.id);
+          setNotice("Produto excluído.");
+          if (editingProduct?.id === product.id) {
+            resetForm();
+          }
+          await loadProducts();
+        } catch (apiError) {
+          setError(apiError.message);
+        }
+      },
+    });
   }
 
   return (
@@ -297,6 +304,12 @@ export default function ProductManager({ canEdit = true }) {
           </div>
         )}
       </article>
+      {confirmDialog && (
+        <ConfirmDialog
+          {...confirmDialog}
+          onCancel={() => setConfirmDialog(null)}
+        />
+      )}
     </section>
   );
 }

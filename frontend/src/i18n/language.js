@@ -15,6 +15,11 @@ const ptToEn = {
   "Entrar": "Sign in",
   "Entrando...": "Signing in...",
   "Validando sessão...": "Validating session...",
+  "Validando sessão": "Validating session",
+  "Estamos preparando seu painel financeiro com segurança.": "We are preparing your financial dashboard securely.",
+  "Conferindo autenticação": "Checking authentication",
+  "Carregando permissões": "Loading permissions",
+  "Sincronizando dados do painel": "Synchronizing dashboard data",
   "Painel financeiro": "Financial dashboard",
   "Controle de caixa em tempo real.": "Real-time cash control.",
   "Exportar": "Export",
@@ -32,6 +37,7 @@ const ptToEn = {
   "Análise rápida": "Quick analysis",
   "Índice de saúde": "Health score",
   "Carregando dados do dashboard...": "Loading dashboard data...",
+  "Atualizando caixa, indicadores e análise rápida.": "Updating cash flow, indicators and quick analysis.",
   "Analisando dados financeiros.": "Analyzing financial data.",
   "A análise será exibida assim que a base responder.": "The analysis will appear as soon as the database responds.",
   "Aguardando dados": "Waiting for data",
@@ -152,6 +158,7 @@ const ptToEn = {
   "O arquivo fica no banco de dados, sem URL pública, com hash SHA-256 para rastreabilidade.": "The file is stored in the database without a public URL, with a SHA-256 hash for traceability.",
   "Enviar documento": "Upload document",
   "Excluir documento": "Delete document",
+  "O arquivo será removido do cadastro do cliente. Essa ação fica registrada no controle do sistema.": "The file will be removed from the customer record. This action stays registered in the system controls.",
   "Novo produto ou serviço": "New product or service",
   "Nome": "First name",
   "Sobrenome": "Last name",
@@ -165,6 +172,8 @@ const ptToEn = {
   "Produto criado.": "Product created.",
   "Produto pausado.": "Product paused.",
   "Produto excluído.": "Product deleted.",
+  "Esse produto ou serviço será removido do catálogo. Clientes já vinculados podem exigir revisão manual.": "This product or service will be removed from the catalog. Linked customers may require manual review.",
+  "Excluir produto": "Delete product",
   "Ativar": "Activate",
   "Salvar alterações": "Save changes",
   "Cancelar edições": "Cancel edits",
@@ -189,6 +198,8 @@ const ptToEn = {
   "Percentual": "Percentage",
   "Valor fixo": "Fixed amount",
   "Criar cupom": "Create coupon",
+  "Faturas futuras não poderão usar este desconto depois da exclusão.": "Future invoices will not be able to use this discount after deletion.",
+  "Excluir cupom": "Delete coupon",
   "Nova fatura": "New invoice",
   "Cliente": "Customer",
   "Selecione": "Select",
@@ -260,6 +271,13 @@ const ptToEn = {
   "Cadastre um plano no cliente antes de gerar a fatura": "Add a plan to the customer before generating the invoice",
   "não pode ser anterior ao início do período": "cannot be earlier than the period start",
   "Preencha nome, sobrenome e usuário.": "Fill in first name, last name and username.",
+  "Este acesso será removido do sistema. Essa ação não pode ser desfeita pela interface.": "This access will be removed from the system. This action cannot be undone from the interface.",
+  "Excluir usuário": "Delete user",
+  "Confirmação": "Confirmation",
+  "Confirmar": "Confirm",
+  "Painel pronto": "Dashboard ready",
+  "Fechar": "Close",
+  "Fechar aviso": "Close notice",
   "A senha deve ter pelo menos 10 caracteres.": "The password must have at least 10 characters.",
   "A senha deve conter números e caracteres especiais.": "The password must include numbers and special characters.",
   "A confirmação de senha não confere.": "The password confirmation does not match.",
@@ -340,6 +358,10 @@ function translateDynamic(text, language) {
     .replace(/^Status do serviço: Cancelado$/, "Service status: Canceled")
     .replace(/^Status do serviço: Cancelamento agendado para (.+)$/, "Service status: Cancellation scheduled for $1")
     .replace(/^Plano: (.+)$/, "Plan: $1")
+    .replace(/^Você está conectado como (.+)\.$/, "You are signed in as $1.")
+    .replace(/^Excluir o cupom (.+)\?$/, "Delete coupon $1?")
+    .replace(/^Excluir o documento (.+)\?$/, "Delete document $1?")
+    .replace(/^Excluir (.+)\?$/, "Delete $1?")
     .replace(/^vencimento dia (.+)$/, "due day $1")
     .replace(/^Vencimento todo dia (.+)$/, "Due every day $1")
     .replace(/^Data efetiva (.+)$/, "Effective date $1")

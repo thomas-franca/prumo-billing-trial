@@ -2,7 +2,37 @@ import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard.jsx";
 import LoginPage from "./components/LoginPage.jsx";
 import { authApi, clearAuthToken, getAuthToken } from "./api/client.js";
-import { LanguageProvider } from "./i18n/language.js";
+import { LanguageProvider, useLanguage } from "./i18n/language.js";
+
+function SessionLoader() {
+  const { t } = useLanguage();
+
+  return (
+    <main className="loading-shell" aria-live="polite">
+      <section className="loading-card" aria-label={t("Validando sessão")}>
+        <div className="loading-brand">
+          <span className="brand-mark">P</span>
+          <div>
+            <strong>Prumo</strong>
+            <small>Billing Trial</small>
+          </div>
+        </div>
+        <div className="loading-copy">
+          <strong>{t("Validando sessão...")}</strong>
+          <p>{t("Estamos preparando seu painel financeiro com segurança.")}</p>
+        </div>
+        <div className="loading-track" aria-hidden="true">
+          <span />
+        </div>
+        <ul className="loading-steps">
+          <li>{t("Conferindo autenticação")}</li>
+          <li>{t("Carregando permissões")}</li>
+          <li>{t("Sincronizando dados do painel")}</li>
+        </ul>
+      </section>
+    </main>
+  );
+}
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -38,11 +68,7 @@ export default function App() {
   return (
     <LanguageProvider>
       {loading ? (
-        <main className="fallback-shell">
-          <section className="panel">
-            <strong>Validando sessão...</strong>
-          </section>
-        </main>
+        <SessionLoader />
       ) : !session ? (
         <LoginPage onLogin={setSession} />
       ) : (

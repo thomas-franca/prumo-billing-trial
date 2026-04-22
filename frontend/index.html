@@ -4,20 +4,203 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Prumo Billing Trial</title>
+    <style>
+      :root {
+        color: #121a16;
+        background: #f3f6f3;
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        background:
+          linear-gradient(180deg, #f8faf8 0, #f3f6f3 380px),
+          #f3f6f3;
+      }
+
+      .initial-loader {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .initial-loader-card {
+        width: min(100%, 520px);
+        display: grid;
+        gap: 22px;
+        padding: 28px;
+        border: 1px solid #d8e2da;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 18px 48px rgba(20, 44, 31, 0.09);
+      }
+
+      .initial-loader-brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .initial-loader-mark {
+        display: grid;
+        width: 46px;
+        height: 46px;
+        place-items: center;
+        border-radius: 8px;
+        background: linear-gradient(145deg, #147a50, #075533);
+        color: white;
+        font-weight: 800;
+        box-shadow: 0 12px 24px rgba(7, 85, 51, 0.2);
+      }
+
+      .initial-loader-brand strong,
+      .initial-loader-brand small {
+        display: block;
+      }
+
+      .initial-loader-brand small {
+        color: #617069;
+        font-weight: 700;
+      }
+
+      .initial-loader-copy {
+        display: grid;
+        gap: 8px;
+      }
+
+      .initial-loader-copy p {
+        margin: 0;
+        color: #075533;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .initial-loader-copy h1 {
+        margin: 0;
+        color: #121a16;
+        font-size: clamp(2rem, 6vw, 3.1rem);
+        line-height: 1.05;
+      }
+
+      .initial-loader-copy span {
+        color: #617069;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+
+      .initial-loader-track {
+        position: relative;
+        overflow: hidden;
+        height: 8px;
+        border-radius: 8px;
+        background: #edf3ee;
+      }
+
+      .initial-loader-track span {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 42%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #147a50, #1f7a8c);
+        animation: initial-loader-bar 1.15s ease-in-out infinite;
+      }
+
+      .initial-loader-steps {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .initial-loader-steps li {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #43514a;
+        font-weight: 800;
+      }
+
+      .initial-loader-steps li::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 8px;
+        background: #147a50;
+        box-shadow: 0 0 0 4px #e6f1ea;
+      }
+
+      @keyframes initial-loader-bar {
+        0% {
+          transform: translateX(-70%);
+        }
+
+        50% {
+          transform: translateX(90%);
+        }
+
+        100% {
+          transform: translateX(250%);
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root">
-      <main class="dashboard fallback-shell">
-        <section class="page-title">
-          <p>Prumo Billing Trial</p>
-          <h1>Carregando o painel financeiro.</h1>
-        </section>
-        <section class="panel">
-          <strong>Preparando a interface...</strong>
-          <span>Se esta mensagem permanecer, recarregue a pagina.</span>
+      <main class="initial-loader" aria-live="polite">
+        <section class="initial-loader-card" aria-label="Carregando painel financeiro">
+          <div class="initial-loader-brand">
+            <span class="initial-loader-mark">P</span>
+            <div>
+              <strong>Prumo</strong>
+              <small>Billing Trial</small>
+            </div>
+          </div>
+          <div class="initial-loader-copy">
+            <p data-loader-text="eyebrow">Painel financeiro</p>
+            <h1 data-loader-text="title">Carregando o painel.</h1>
+            <span data-loader-text="body">Preparando a interface e sincronizando os dados iniciais.</span>
+          </div>
+          <div class="initial-loader-track" aria-hidden="true">
+            <span></span>
+          </div>
+          <ul class="initial-loader-steps">
+            <li data-loader-text="stepApp">Inicializando o aplicativo</li>
+            <li data-loader-text="stepModules">Carregando módulos financeiros</li>
+            <li data-loader-text="stepSecurity">Preparando uma experiência segura</li>
+          </ul>
         </section>
       </main>
     </div>
+    <script>
+      (() => {
+        const language = localStorage.getItem("prumo_billing_language");
+        if (language !== "en") return;
+
+        const copy = {
+          eyebrow: "Financial dashboard",
+          title: "Loading dashboard.",
+          body: "Preparing the interface and synchronizing initial data.",
+          stepApp: "Starting the application",
+          stepModules: "Loading financial modules",
+          stepSecurity: "Preparing a secure experience",
+        };
+
+        document.documentElement.lang = "en";
+        Object.entries(copy).forEach(([key, value]) => {
+          const element = document.querySelector(`[data-loader-text="${key}"]`);
+          if (element) element.textContent = value;
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

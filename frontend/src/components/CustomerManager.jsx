@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 import DocumentList from "./DocumentList.jsx";
 import { customerDocumentsApi, customersApi, productsApi } from "../api/client.js";
 import { useLanguage } from "../i18n/language.js";
@@ -128,6 +129,7 @@ export default function CustomerManager({ canEdit = true }) {
   const [customCancellationCustomerId, setCustomCancellationCustomerId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   const selectedCustomer = editingCustomer
     ? customers.find((customer) => customer.id === editingCustomer.id) ?? editingCustomer
@@ -315,18 +317,26 @@ export default function CustomerManager({ canEdit = true }) {
 
   async function deleteDocument(document) {
     if (!canEdit || !selectedCustomer || selectedCustomer.status !== "active") return;
-    if (!window.confirm(`Excluir o documento ${document.title}?`)) return;
 
     setError("");
     setNotice("");
 
-    try {
-      await customerDocumentsApi.remove(document.id);
-      setNotice(t("Documento excluído."));
-      await loadCustomers();
-    } catch (apiError) {
-      setError(t(apiError.message));
-    }
+    setConfirmDialog({
+      title: `Excluir o documento ${document.title}?`,
+      message: "O arquivo será removido do cadastro do cliente. Essa ação fica registrada no controle do sistema.",
+      confirmLabel: "Excluir documento",
+      onConfirm: async () => {
+        setConfirmDialog(null);
+
+        try {
+          await customerDocumentsApi.remove(document.id);
+          setNotice(t("Documento excluído."));
+          await loadCustomers();
+        } catch (apiError) {
+          setError(t(apiError.message));
+        }
+      },
+    });
   }
 
   function renderHistoryEvent(event) {
@@ -696,6 +706,12 @@ export default function CustomerManager({ canEdit = true }) {
           </div>
         )}
       </article>
+      {confirmDialog && (
+        <ConfirmDialog
+          {...confirmDialog}
+          onCancel={() => setConfirmDialog(null)}
+        />
+      )}
     </section>
   );
 }
