@@ -24,6 +24,7 @@ plan.md
 STATUS.md
 SECURITY_PLAN.md
 GITHUB_DESCRIPTION.md
+RED_TEAM_AUDIT*.md
 
 # OS/editor files
 .DS_Store

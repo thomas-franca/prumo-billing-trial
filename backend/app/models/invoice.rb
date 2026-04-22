@@ -47,33 +47,39 @@ class Invoice < ApplicationRecord
   end
 
   def record_paid!
-    unless editable?
-      errors.add(:base, "Somente faturas abertas podem ser marcadas como pagas")
-      raise ActiveRecord::RecordInvalid, self
-    end
+    with_lock do
+      unless editable?
+        errors.add(:base, "Somente faturas abertas podem ser marcadas como pagas")
+        raise ActiveRecord::RecordInvalid, self
+      end
 
-    update!(status: "paid", paid_at: Time.current, canceled_at: nil)
-    record_billing_event!("invoice_paid", "Fatura paga")
+      update!(status: "paid", paid_at: Time.current, canceled_at: nil)
+      record_billing_event!("invoice_paid", "Fatura paga")
+    end
   end
 
   def record_canceled!
-    unless cancellable?
-      errors.add(:base, "Somente faturas abertas ou falhas podem ser canceladas")
-      raise ActiveRecord::RecordInvalid, self
-    end
+    with_lock do
+      unless cancellable?
+        errors.add(:base, "Somente faturas abertas ou falhas podem ser canceladas")
+        raise ActiveRecord::RecordInvalid, self
+      end
 
-    update!(status: "canceled", canceled_at: Time.current)
-    record_billing_event!("invoice_canceled", "Fatura cancelada")
+      update!(status: "canceled", canceled_at: Time.current)
+      record_billing_event!("invoice_canceled", "Fatura cancelada")
+    end
   end
 
   def record_reactivated!
-    unless reactivatable?
-      errors.add(:base, "Somente faturas canceladas podem ser reativadas")
-      raise ActiveRecord::RecordInvalid, self
-    end
+    with_lock do
+      unless reactivatable?
+        errors.add(:base, "Somente faturas canceladas podem ser reativadas")
+        raise ActiveRecord::RecordInvalid, self
+      end
 
-    update!(status: "open", canceled_at: nil)
-    record_billing_event!("invoice_reactivated", "Fatura reativada")
+      update!(status: "open", canceled_at: nil)
+      record_billing_event!("invoice_reactivated", "Fatura reativada")
+    end
   end
 
   def record_billing_event!(event_type, details)

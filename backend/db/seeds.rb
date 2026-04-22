@@ -1,4 +1,10 @@
-admin_password = ENV.fetch("ADMIN_PASSWORD", "Prumo2026!Admin#")
+admin_password = ENV["ADMIN_PASSWORD"].presence
+
+if admin_password.blank?
+  raise "ADMIN_PASSWORD is required in production seeds." if Rails.env.production?
+
+  admin_password = "Prumo2026!Admin#"
+end
 
 admin_user = User.find_or_initialize_by(username: "dev-prumo")
 admin_user.assign_attributes(
@@ -235,4 +241,4 @@ record_service_event_once(
   details: "Cancelamento agendado para o fim do período #{mercado_atlas.cancel_at.strftime('%d/%m/%Y')}."
 )
 
-puts "Trial pronto. Login: dev-prumo / #{admin_password}"
+puts "Trial pronto. Login: dev-prumo / senha definida para o ambiente local."

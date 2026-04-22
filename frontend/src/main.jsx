@@ -13,16 +13,31 @@ try {
   );
 } catch (error) {
   console.error(error);
-  rootElement.innerHTML = `
-    <main class="dashboard">
-      <section class="page-title">
-        <p>Prumo Billing Trial</p>
-        <h1>Não foi possível carregar a interface.</h1>
-      </section>
-      <section class="panel">
-        <strong>Erro ao iniciar o frontend.</strong>
-        <span>${error instanceof Error ? error.message : "Erro desconhecido"}</span>
-      </section>
-    </main>
-  `;
+  rootElement.textContent = "";
+
+  const main = document.createElement("main");
+  main.className = "dashboard";
+
+  const title = document.createElement("section");
+  title.className = "page-title";
+
+  const label = document.createElement("p");
+  label.textContent = "Prumo Billing Trial";
+
+  const heading = document.createElement("h1");
+  heading.textContent = "Nao foi possivel carregar a interface.";
+
+  const panel = document.createElement("section");
+  panel.className = "panel";
+
+  const strong = document.createElement("strong");
+  strong.textContent = "Erro ao iniciar o frontend.";
+
+  const message = document.createElement("span");
+  message.textContent = error instanceof Error ? error.message : "Erro desconhecido";
+
+  title.append(label, heading);
+  panel.append(strong, message);
+  main.append(title, panel);
+  rootElement.append(main);
 }

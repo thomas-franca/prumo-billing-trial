@@ -1,6 +1,3 @@
-require "json"
-require "open3"
-
 module Dashboard
   class SummaryService
     SYSTEM_COSTS_CENTS = 0
@@ -37,7 +34,7 @@ module Dashboard
         }
       }
 
-      metrics.merge(insight: python_insight(metrics))
+      metrics.merge(insight: ruby_insight(metrics))
     end
 
     private
@@ -93,31 +90,6 @@ module Dashboard
       invoices.sum do |invoice|
         invoice.due_date&.between?(start_date, end_date) ? invoice.amount_cents : 0
       end
-    end
-
-    def python_insight(metrics)
-      script = Rails.root.join("lib/python/dashboard_insight.py")
-      return ruby_insight(metrics) unless File.exist?(script)
-
-      command = python_command
-      return ruby_insight(metrics) unless command
-
-      stdout, stderr, status = Open3.capture3(*command, script.to_s, stdin_data: metrics.to_json)
-      stdout = stdout.force_encoding("UTF-8").scrub
-      return JSON.parse(stdout, symbolize_names: true) if status.success?
-
-      Rails.logger.warn("Dashboard insight fallback: #{stderr}")
-      ruby_insight(metrics)
-    rescue StandardError => error
-      Rails.logger.warn("Dashboard insight fallback: #{error.message}")
-      ruby_insight(metrics)
-    end
-
-    def python_command
-      return ["python"] if system("python", "--version", out: File::NULL, err: File::NULL)
-      return ["py", "-3"] if system("py", "-3", "--version", out: File::NULL, err: File::NULL)
-
-      nil
     end
 
     def ruby_insight(metrics)

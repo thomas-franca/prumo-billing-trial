@@ -1,7 +1,9 @@
 class ApiAuthorizationPolicy
   READ_ACTIONS = %w[index show].freeze
+  WRITE_ACTIONS = %w[create update].freeze
+  FINANCIAL_STATE_ACTIONS = %w[pay cancel reactivate].freeze
 
-  FINANCE_CONTROLLERS = %w[
+  FINANCE_READ_CONTROLLERS = %w[
     coupons
     customers
     customer_cancellations
@@ -10,6 +12,17 @@ class ApiAuthorizationPolicy
     documents
     invoices
     payment_methods
+    products
+    subscriptions
+    tax_documents
+  ].freeze
+
+  FINANCE_WRITE_CONTROLLERS = %w[
+    coupons
+    customers
+    customer_cancellations
+    customer_documents
+    invoices
     products
     subscriptions
     tax_documents
@@ -45,9 +58,14 @@ class ApiAuthorizationPolicy
 
   def finance_allowed?
     return false if controller_name == "users"
-    return false unless FINANCE_CONTROLLERS.include?(controller_name)
+    return false if action_name == "destroy"
+    return true if FINANCE_READ_CONTROLLERS.include?(controller_name) && READ_ACTIONS.include?(action_name)
+    return true if FINANCE_WRITE_CONTROLLERS.include?(controller_name) && WRITE_ACTIONS.include?(action_name)
+    return true if controller_name == "invoices" && FINANCIAL_STATE_ACTIONS.include?(action_name)
+    return true if controller_name == "subscriptions" && %w[cancel reactivate].include?(action_name)
+    return true if controller_name == "customer_documents" && action_name == "download"
 
-    true
+    false
   end
 
   def seller_allowed?

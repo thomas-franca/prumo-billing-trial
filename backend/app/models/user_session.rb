@@ -2,7 +2,7 @@ require "digest"
 require "securerandom"
 
 class UserSession < ApplicationRecord
-  TOKEN_TTL = 12.hours
+  TOKEN_TTL = 2.hours
 
   belongs_to :user
 

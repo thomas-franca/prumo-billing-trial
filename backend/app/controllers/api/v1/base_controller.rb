@@ -3,6 +3,7 @@ module Api
     class BaseController < ActionController::API
       before_action :authenticate_user!
       before_action :authorize_request!
+      after_action :set_security_headers!
       after_action :audit_security_relevant_request!
 
       rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
@@ -18,7 +19,8 @@ module Api
         @current_user_session = UserSession.find_by_token(token)
 
         unless current_user_session&.active?
-          render json: { error: "Autenticação obrigatória." }, status: :unauthorized
+          audit_security_event!("auth.required", metadata: { reason: "missing_or_expired_token" })
+          render json: { error: "Autenticacao obrigatoria." }, status: :unauthorized
           return
         end
 
@@ -36,6 +38,14 @@ module Api
 
         return if policy.allowed?
 
+        audit_security_event!(
+          "authorization.denied",
+          metadata: {
+            controller: controller_name,
+            action: action_name,
+            params_id: params[:id]
+          }
+        )
         render json: { error: "Acesso negado." }, status: :forbidden
       end
 
@@ -55,7 +65,7 @@ module Api
 
       def render_not_found(error)
         Rails.logger.info("record_not_found controller=#{controller_name} action=#{action_name} error=#{error.class}")
-        render json: { error: "Recurso não encontrado." }, status: :not_found
+        render json: { error: "Recurso nao encontrado." }, status: :not_found
       end
 
       def render_unprocessable_entity(error)
@@ -87,6 +97,24 @@ module Api
 
       def audit_resource_id
         params[:id] || params[:customer_id] || params[:invoice_id] || params[:subscription_id]
+      end
+
+      def audit_security_event!(action, metadata: {})
+        AuditLogger.call(
+          user: current_user,
+          action: action,
+          resource_type: controller_name,
+          resource_id: audit_resource_id,
+          request: request,
+          metadata: metadata
+        )
+      end
+
+      def set_security_headers!
+        response.set_header("X-Content-Type-Options", "nosniff")
+        response.set_header("X-Frame-Options", "DENY")
+        response.set_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        response.set_header("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()")
       end
     end
   end
